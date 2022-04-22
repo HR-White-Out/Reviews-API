@@ -9,64 +9,68 @@
 -- Table 'reviews'
 --
 -- ---
-CREATE DATABASE reviews;
+DROP DATABASE IF EXISTS reviewsAPI;
+CREATE DATABASE reviewsAPI;
 
-USE reviews;
-DROP TABLE IF EXISTS `ReviewsAPI`;
+\c reviews_api;
+DROP TABLE IF EXISTS `reviews`;
 
-CREATE TABLE `ReviewsAPI` (
-  `review_id` INTEGER(7) NOT NULL DEFAULT Required,
-  `rating` INTEGER(1-5) NOT NULL,
-  `summary` VARCHAR(60 char) NULL DEFAULT NULL,
+CREATE TABLE `reviews` (
+  `id` INTEGER NOT NULL UNIQUE,
+  `rating` INTEGER NOT NULL,
+  `summary` VARCHAR(60) NULL DEFAULT NULL,
   `product_id` INTEGER NOT NULL,
-  `body` MEDIUMTEXT(50 to 1000) NOT NULL,
+  `body` VARCHAR(1000) NOT NULL,
   `date` INTEGER NOT NULL,
-  `recommend` bit NOT NULL,
+  `recommend` BOOLEAN NOT NULL,
   `hepfulness` INTEGER NULL DEFAULT NULL,
-  `reviewer_name` CHAR(up to 60) NULL DEFAULT NULL,
-  PRIMARY KEY (`review_id`)
+  `reviewer_name` CHAR(60) NULL DEFAULT NULL,
+  `reported` BOOLEAN DEFAULT FALSE,
+  `reviewer_email` CHAR(60) NULL DEFAULT NULL,
+  `response` TEXT(1000) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
 );
 
 -- ---
--- Table 'Photos'
+-- Table 'reviews_photos'
 --
 -- ---
 
-DROP TABLE IF EXISTS `Photos`;
+DROP TABLE IF EXISTS `reviews_photos`;
 
-CREATE TABLE `Photos` (
-  `id` INTEGER NOT NULL AUTO_INCREMENT DEFAULT required    ,
+CREATE TABLE `reviews_photos` (
+  `id` INTEGER NOT NULL UNIQUE,
   `review_id` INTEGER NOT NULL,
-  `url` VARCHAR NOT NULL,
+  `url` VARCHAR(1024) NOT NULL,
   PRIMARY KEY (`id`)
 );
-
--- ---
--- Table 'response'
--- Dont know what needs to be in this table yet
--- ---
-
-DROP TABLE IF EXISTS `response`;
-
-CREATE TABLE `response` (
-  `id` INTEGER NULL AUTO_INCREMENT DEFAULT NULL,
-  `review_id` INTEGER NOT NULL,
-  `body` MEDIUMTEXT NULL DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) COMMENT 'Dont know what needs to be in this table yet';
 
 -- ---
 -- Table 'characteristics'
---
+-- Dont know what needs to be in this table yet
 -- ---
 
 DROP TABLE IF EXISTS `characteristics`;
 
 CREATE TABLE `characteristics` (
-  `id` INTEGER NOT NULL AUTO_INCREMENT DEFAULT required,
-  `lable` VARCHAR NOT NULL DEFAULT 'required',
+  `id` INTEGER NOT NULL,
+  `product_id` INTEGER NOT NULL,
+  `name` CHAR(60) NOT NULL,
+  PRIMARY KEY (`id`)
+);
+
+-- ---
+-- Table 'characteristics_reviews'
+--
+-- ---
+
+DROP TABLE IF EXISTS `characteristics_reviews`;
+
+CREATE TABLE `characteristics_reviews` (
+  `id` INTEGER NOT NULL,
+  `characteristic_id` INTEGER NOT NULL,
+  `review_id` INTEGER NOT NULL,
   `value` DECIMAL NULL DEFAULT NULL,
-  `reviews_id` INTEGER NOT NULL DEFAULT required,
   PRIMARY KEY (`id`)
 );
 
@@ -74,9 +78,9 @@ CREATE TABLE `characteristics` (
 -- Foreign Keys
 -- ---
 
-ALTER TABLE `Photos` ADD FOREIGN KEY (review_id) REFERENCES `reviews` (`review_id`);
-ALTER TABLE `response` ADD FOREIGN KEY (review_id) REFERENCES `reviews` (`review_id`);
-ALTER TABLE `characteristics` ADD FOREIGN KEY (reviews_id) REFERENCES `reviews` (`review_id`);
+ALTER TABLE reviews_photos ADD FOREIGN KEY (review_id) REFERENCES reviews (id);
+ALTER TABLE characteristics_reviews ADD FOREIGN KEY (review_id) REFERENCES reviews (id);
+ALTER TABLE characteristics_reviews ADD FOREIGN KEY (characteristic_id) REFERENCES characteristics (id);
 
 -- ---
 -- Table Properties
