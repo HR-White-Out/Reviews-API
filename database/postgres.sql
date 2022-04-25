@@ -78,6 +78,10 @@ CREATE TABLE characteristics_reviews (
 -- Foreign Keys
 -- ---
 
+CREATE INDEX review_id_idx ON reviews_photos (review_id);
+CREATE INDEX product_id_idx ON characteristics (product_id);
+CREATE INDEX review_id_idx ON characteristics_reviews (review_id);
+
 ALTER TABLE reviews_photos ADD FOREIGN KEY (review_id) REFERENCES reviews (id);
 ALTER TABLE characteristics_reviews ADD FOREIGN KEY (review_id) REFERENCES reviews (id);
 ALTER TABLE characteristics_reviews ADD FOREIGN KEY (characteristic_id) REFERENCES characteristics (id);

@@ -1,7 +1,7 @@
-require('dotenv').config();
 const { Pool } = require('pg');
 const mod = require('../models/models');
 const PORT = process.env.PORT || 3000;
+require('dotenv').config();
 
 const pool = new Pool({
   user: process.env.dbUser,
@@ -11,8 +11,8 @@ const pool = new Pool({
 });
 
 module.exports = {
-  getReviews: function getReviews() {
-    let { product_id, page = 1, count = 5, sort = 'relevant' } = req.query;
+  getReviews: function getReviews(req, res) {
+    let { product_id = 1, page = 1, count = 5, sort = 'relevant' } = req.query;
     if (sort === 'relevant') {
       sort = 'helpfulness DESC, date'
     }
@@ -36,18 +36,18 @@ module.exports = {
       res.send(result);
     })
     .catch((error) => console.log(error));
-  }
+  },
   postReview: function postReview(req, res) {
     mod.postReview(req.body)
     .then(() => res.status(201).send())
     .catch((error) => console.log(error));
 
-  }
+  },
   putHelpful: function putHelpful(req, res) {
     mod.putHelpful(req.params.review_id)
     .then(() => res.status(204).send())
     .catch((error) => console.log(error));
-  }
+  },
   putReport: function putReport(req, res) {
     mod.putReport(req.params.review_id)
     .then(() => res.status(204).send())

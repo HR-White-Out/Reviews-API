@@ -1,14 +1,39 @@
 require('dotenv').config();
 const { Pool } = require('pg');
 const PORT = process.env.PORT || 3000;
+const { dbUser, dbHost, db, dbPassword } = process.env;
 
+const pool = new Pool({
+  user: dbUser,
+  host: dbHost,
+  database: db,
+  password: dbPassword,
+  port: '5432'
+});
+
+function getPhoto(review_id) {
+  return new Promise((resolve, reject) => {
+    pool.query(`
+    SELECT url FROM reviews_photos
+    WHERE review_id = ${review_id};`,
+    (error, data) => {
+      if (error) {
+        reject(error)
+      } else {
+        console.log(data.rows);
+        resolve(data)
+      }
+    }
+    )
+  });
+};
 module.exports = {
   // get requests
   getReviews: function getReviews(id, page, count, sort) {
     return new Promise((resolve, reject) => {
       pool.query(`
-      SELECT id AS review_id, rating, summary, recommend, response, body, date, reviewer_name, photos
-      FROM reviews2
+      SELECT id AS review_id, rating, summary, recommend, response, body, date, reviewer_name
+      FROM reviews
       WHERE product_id = ${id} AND reported = false
       ORDER BY ${sort} DESC
       LIMIT ${count};`
@@ -16,6 +41,8 @@ module.exports = {
         if (error) {
           reject(error)
         } else {
+
+          console.log(data.rows);
           resolve(data)
         }
       })
@@ -25,7 +52,7 @@ module.exports = {
     return new Promise((resolve, reject) => {
       pool.query(`
       WITH reviews AS
-        (SELECT recommend, rating FROM reviews2 WHERE product_id = 20)
+        (SELECT recommend, rating FROM reviews WHERE product_id = 20)
       SELECT JSON_BUILD_OBJECT('ratings', meta.ratings, 'recommended', meta.recommend, 'characteristics', meta.agg_chars) FROM
       (
         SELECT * FROM
@@ -75,7 +102,7 @@ module.exports = {
         ) as vals
         WHERE column2 IS NOT NULL
       )
-      INSERT INTO reviews2
+      INSERT INTO reviews
       (product_id, rating, date, summary, body, recommend, reported, reviewer_name, reviewer_email, response, helpfulness, photos)
       VALUES($1, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24)
       `
@@ -98,7 +125,7 @@ module.exports = {
   },
   putHelpful: function putHelpful(id) {
     return new Promise((resolve, reject) => {
-      pool.query(`UPDATE reviews2 SET helpfulness = helpfulness + 1 WHERE id = ${id}`
+      pool.query(`UPDATE reviews SET helpfulness = helpfulness + 1 WHERE id = ${id}`
       , (err, data) => {
         if (err) {
           reject(err);
@@ -110,7 +137,7 @@ module.exports = {
   },
   putReport: function putReport(id) {
     return new Promise((resolve, reject) => {
-      pool.query(`UPDATE reviews2 SET reported = true WHERE id = ${id}`
+      pool.query(`UPDATE reviews SET reported = true WHERE id = ${id}`
       , (err, data) => {
         if (err) {
           reject(err);
