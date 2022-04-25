@@ -1,5 +1,5 @@
 \c reviewsAPI;
-COPY reviews(id, rating, summary, body, product_id, date, recommend, hepfulness, reviewer_name, reported, reviewer_email, response)
+COPY reviews(id, product_id, rating, date, summary, body, recommend, reported, reviewer_name, reviewer_email, response, helpfulness)
   FROM '/Users/adarsh/HackReactor/SDC/data/reviews.csv'
   DELIMITER ','
   CSV HEADER;
