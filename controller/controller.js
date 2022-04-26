@@ -29,7 +29,8 @@ module.exports = {
       .catch((error) => console.log(error));
   },
   getMeta: function getMeta(req, res) {
-    mod.getMeta(req.query.product_id)
+    let {product_id = 2 } = req.query;
+    mod.getMeta(product_id)
     .then((data) => {
       let result = data.rows[0].json_build_object;
       result.product_id = req.query.product_id;
