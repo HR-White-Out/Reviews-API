@@ -9,10 +9,10 @@
 -- Table 'reviews'
 --
 -- ---
-DROP DATABASE IF EXISTS reviewsAPI;
-CREATE DATABASE reviewsAPI;
+DROP DATABASE IF EXISTS reviewsapi;
+CREATE DATABASE reviewsapi;
 
-\c reviewsAPI;
+\c reviewsapi;
 DROP TABLE IF EXISTS characteristics_reviews;
 DROP TABLE IF EXISTS characteristics;
 DROP TABLE IF EXISTS reviews_photos;
