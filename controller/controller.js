@@ -29,6 +29,7 @@ module.exports = {
       .catch((error) => console.log(error));
   },
   getMeta: function getMeta(req, res) {
+    // fix this later
     let {product_id = 2 } = req.query;
     mod.getMeta(product_id)
     .then((data) => {
@@ -40,19 +41,19 @@ module.exports = {
   },
   postReview: function postReview(req, res) {
     mod.postReview(req.body)
-    .then(() => res.status(201).send())
-    .catch((error) => console.log(error));
+      .then(() => res.status(201))
+      .catch((err) => res.sendStatus(500));
 
   },
   putHelpful: function putHelpful(req, res) {
     mod.putHelpful(req.params.review_id)
-    .then(() => res.status(204).send())
-    .catch((error) => console.log(error));
+      .then(() => res.status(204).send())
+      .catch((error) => console.log(error));
   },
   putReport: function putReport(req, res) {
     mod.putReport(req.params.review_id)
-    .then(() => res.status(204).send())
-    .catch((error) => console.log(error));
+      .then(() => res.status(204).send())
+      .catch((error) => console.log(error));
   }
 
 }

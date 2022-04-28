@@ -65,7 +65,7 @@ module.exports = {
       .then((data) => {
         if (req.characteristics) {
           for (let key in req.characteristics) {
-            pool.query(`INSERT INTO characteristics_data (product_id, characteristic_id, review_id, name, value) VALUES (${req.product_id}, ${key}, ${data.rows[0].review_id,}, (SELECT name FROM characteristics_data WHERE characteristics_data.characteristic_id = ${key} AND characteristics_data.product_id = ${req.product_id} LIMIT 1), ${req.characteristics[key]})`)
+            pool.query(`INSERT INTO characteristics_data (product_id, characteristic_id, review_id, name, value) VALUES (${req.product_id}, ${key}, ${data.rows[0].review_id}, (SELECT name FROM characteristics_data WHERE characteristics_data.characteristic_id = ${key} AND characteristics_data.product_id = ${req.product_id} LIMIT 1), ${req.characteristics[key]})`)
               .catch((err) => console.log(err, 'err posting chars'))
           }
         }
