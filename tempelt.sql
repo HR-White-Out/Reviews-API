@@ -30,43 +30,19 @@ CREATE TABLE reviews (
   helpfulness INTEGER NULL DEFAULT NULL,
   PRIMARY KEY (id)
 );
-CREATE TABLE reviews_photos (
-  id INTEGER NOT NULL UNIQUE,
-  review_id INTEGER NOT NULL,
-  url VARCHAR(1024) NOT NULL,
-  PRIMARY KEY (id)
-);
+
 -- cody data from csv files --
-\copy reviews FROM '../../data/reviews.csv' DELIMITER ',' CSV HEADER;
-\copy reviews_photos FROM '../../data/reviews_photos.csv' DELIMITER ',' CSV HEADER;
+\copy reviews FROM './reviews.csv' DELIMITER ',' CSV HEADER;
 
--- temp data --
-CREATE TABLE photosdata as
-SELECT reviews_photos.review_id, JSON_AGG(JSON_BUILD_OBJECT('id', id, 'url', url)) as photos
-FROM reviews_photos
-GROUP BY reviews_photos.review_id;
+ALTER TABLE reviews DROP id;
+ALTER TABLE reviews ADD id BIGSERIAL PRIMARY KEY UNIQUE;
 
--- create final table --
-CREATE TABLE reviewdata AS
-SELECT reviews.*, photosdata.photos
-FROM reviews
-LEFT JOIN photosdata ON reviews.id = photosdata.review_id
-ORDER BY reviews.id;
+CREATE INDEX id ON reviews (product_id);
 
--- no longer need reviews,reviews_photos and photosdata --
-DROP TABLE IF EXISTS reviews_photos;
-DROP TABLE IF EXISTS reviews;
-DROP TABLE IF EXISTS photosdata;
-
-ALTER TABLE reviewdata DROP id;
-ALTER TABLE reviewdata ADD id BIGSERIAL PRIMARY KEY UNIQUE;
-
-CREATE INDEX id ON reviewdata (product_id);
-
-UPDATE reviewdata SET date = date/1000;
-ALTER TABLE reviewdata ALTER date TYPE TIMESTAMP WITHOUT TIME ZONE USING to_timestamp(date) AT TIME ZONE 'UTC';
-ALTER TABLE reviewdata ALTER reported SET DEFAULT false;
-ALTER TABLE reviewdata ALTER helpfulness SET DEFAULT 0;
+UPDATE reviews SET date = date/1000;
+ALTER TABLE reviews ALTER date TYPE TIMESTAMP WITHOUT TIME ZONE USING to_timestamp(date) AT TIME ZONE 'UTC';
+ALTER TABLE reviews ALTER reported SET DEFAULT false;
+ALTER TABLE reviews ALTER helpfulness SET DEFAULT 0;
 
 -- Created first table --
 --------------------------------------------------------------------
@@ -85,8 +61,8 @@ CREATE TABLE characteristics_reviews (
   PRIMARY KEY (id)
 );
 -- cody data from csv files --
-\copy characteristics FROM '../../data/characteristics.csv' DELIMITER ',' CSV HEADER;
-\copy characteristics_reviews FROM '../../data/characteristic_reviews.csv' DELIMITER ',' CSV HEADER;
+\copy characteristics FROM './characteristics.csv' DELIMITER ',' CSV HEADER;
+\copy characteristics_reviews FROM './characteristic_reviews.csv' DELIMITER ',' CSV HEADER;
 
 CREATE TABLE chars (
   id SERIAL UNIQUE,

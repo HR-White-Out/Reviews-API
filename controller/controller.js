@@ -7,7 +7,7 @@ const pool = new Pool({
   user: process.env.dbUser,
   host: process.env.dbHost,
   database: process.env.db,
-  port: '6000'
+  port: '5432'
 });
 
 module.exports = {
@@ -18,13 +18,7 @@ module.exports = {
     }
     mod.getReviews(product_id, page, count, sort)
       .then((data) => {
-        let result = {
-          product: product_id,
-          page,
-          count,
-          results: data.rows
-        };
-        res.send(result);
+        res.send(data.rows[0].json_build_object);
       })
       .catch((error) => console.log(error));
   },
@@ -33,9 +27,7 @@ module.exports = {
     let {product_id = 2 } = req.query;
     mod.getMeta(product_id)
     .then((data) => {
-      let result = data.rows[0].json_build_object;
-      result.product_id = req.query.product_id;
-      res.send(result);
+      res.send(data.rows[0].json_build_object);
     })
     .catch((error) => console.log(error));
   },
@@ -43,7 +35,6 @@ module.exports = {
     mod.postReview(req.body)
       .then(() => res.status(201))
       .catch((err) => res.sendStatus(500));
-
   },
   putHelpful: function putHelpful(req, res) {
     mod.putHelpful(req.params.review_id)

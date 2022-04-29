@@ -15,12 +15,22 @@ module.exports = {
   // get requests
   getReviews: function getReviews(id, page, count, sort) {
     return new Promise((resolve, reject) => {
-      pool.query(`
-      SELECT *
-      FROM reviewData
-      WHERE product_id = ${id} AND reported = false
-      ORDER BY ${sort} DESC
-      LIMIT ${count};`
+      pool.query(`SELECT JSON_BUILD_OBJECT(
+        'product_id', cast(${id} AS VARCHAR),
+        'page', ${page},
+        'count', ${count},
+        'results', (SELECT json_agg( JSON_BUILD_OBJECT(
+            'review_id', id,
+            'rating', rating,
+            'summary', summary,
+            'recommond', recommend,
+            'response', response,
+            'body', body,
+            'date', date,
+            'reviewer_name', reviewer_name,
+            'helpfulness', helpfulness
+      )) FROM (SELECT id, rating, summary, recommend, response, body, date, reviewer_name, helpfulness FROM reviewdata WHERE product_id = 123 ORDER BY ${sort} DESC LIMIT ${count}) AS reviews)
+      )`
       , (error, data) => {
         if (error) {
           reject(error)
@@ -30,10 +40,34 @@ module.exports = {
       })
     });
   },
+  /*
+  SELECT JSON_BUILD_OBJECT(
+    'product_id', ${id},
+    'page', ${page},
+    'count', ${count},
+    'results', (SELECT JSON_BUILD_array(
+      (SELECT JSON_BUILD_OBJECT(
+        'review_id', id,
+        'rating', rating,
+        'summary', summary,
+        'recommond', recommond,
+        'response', response,
+        'body', body,
+        'date', date,
+        'reviewer_name', reviewer_name,
+        'helpfulness', helpfulness,
+        'photos', (SELECT JSON_BUILD_array(
+          (SELECT JSON_OBJECT_AGG(
+                'id', id,
+                'url', url
+          )FROM (SELECT id, url FROM reviews_photos WHERE review_id = reviews.id) AS photos)))
+    ))
+  )
+  */
   getMeta: function getMeta(id) {
     return new Promise((resolve, reject) => {
       pool.query(`SELECT JSON_BUILD_OBJECT(
-        'product_id', ${id},
+        'product_id', cast(${id} AS VARCHAR),
         'ratings', (SELECT JSON_OBJECT_AGG(rating, rating_data)
           FROM (SELECT rating, count(*) AS rating_data FROM reviewData WHERE product_id = ${id} GROUP BY rating) AS rate),
         'recommended', (SELECT JSON_OBJECT_AGG(recommend, rec_data)
