@@ -28,8 +28,14 @@ module.exports = {
             'body', body,
             'date', date,
             'reviewer_name', reviewer_name,
-            'helpfulness', helpfulness
-      )) FROM (SELECT id, rating, summary, recommend, response, body, date, reviewer_name, helpfulness FROM reviewdata WHERE product_id = 123 ORDER BY ${sort} DESC LIMIT ${count}) AS reviews)
+            'helpfulness', helpfulness,
+			'photos', (SELECT JSON_AGG(JSON_BUILD_OBJECT(
+                'id', review_id,
+                'url', url
+          ))
+          FROM (SELECT review_id, url
+            FROM reviews_photos WHERE review_id = id) AS photos)
+      )) FROM (SELECT id, rating, summary, recommend, response, body, date, reviewer_name, helpfulness FROM reviewdata WHERE product_id = ${id} ORDER BY ${sort} DESC LIMIT ${count}) AS reviews)
       )`
       , (error, data) => {
         if (error) {
@@ -40,30 +46,7 @@ module.exports = {
       })
     });
   },
-  /*
-  SELECT JSON_BUILD_OBJECT(
-    'product_id', ${id},
-    'page', ${page},
-    'count', ${count},
-    'results', (SELECT JSON_BUILD_array(
-      (SELECT JSON_BUILD_OBJECT(
-        'review_id', id,
-        'rating', rating,
-        'summary', summary,
-        'recommond', recommond,
-        'response', response,
-        'body', body,
-        'date', date,
-        'reviewer_name', reviewer_name,
-        'helpfulness', helpfulness,
-        'photos', (SELECT JSON_BUILD_array(
-          (SELECT JSON_OBJECT_AGG(
-                'id', id,
-                'url', url
-          )FROM (SELECT id, url FROM reviews_photos WHERE review_id = reviews.id) AS photos)))
-    ))
-  )
-  */
+
   getMeta: function getMeta(id) {
     return new Promise((resolve, reject) => {
       pool.query(`SELECT JSON_BUILD_OBJECT(
