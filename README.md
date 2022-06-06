@@ -1,7 +1,7 @@
 # Reviews-API
 by Adarshraj Ravindran
 
-This is a backend API node/express/Postgres application that provides product information to an e-Commerce front end. <br>
+This is a backend API node/express/Postgres application that provides review information to an e-Commerce front end. <br>
 ## Technologies Used
 
 <div align="center" width="100%">
