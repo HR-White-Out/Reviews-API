@@ -34,7 +34,7 @@ npm start
 
 ## API Endpoints
 
-### List Reviews
+## List Reviews
 
 Returns a list of reviews for a particular product. This list does not include any reported reviews.
 
@@ -94,7 +94,7 @@ Expected data output exemple:
 }
 ```
 
-### Get Review Metadata
+## Get Review Metadata
 
 Returns review metadata for a given product.
 
