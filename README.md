@@ -37,7 +37,7 @@ npm start
 
 Returns a list of reviews for a particular product. This list does not include any reported reviews.
 
-`GET /reviews/`
+GET `/reviews/`
 
 Query Parameters
 <table style="width:100%">
@@ -117,7 +117,7 @@ Expected data output exemple:
 
 Returns review metadata for a given product.
 
-`GET /reviews/meta`
+GET `/reviews/meta`
 
 QueryParameters
 <table style="width:100%">
@@ -164,3 +164,112 @@ Expected data output exemple:
     // ...
 }
 ```
+
+## Add a Review
+
+Adds a review for the given product.
+
+POST `/reviews`
+
+Body Parameters
+<table style="width:100%">
+  <tr>
+    <th>Parameter</th>
+    <th>Type</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td>product_id</td>
+    <td>integer</td>
+    <td>Required ID of the product to post the review for</td>
+  </tr>
+  <tr>
+    <td>rating</td>
+    <td>int</td>
+    <td>Integer (1-5) indicating the review rating</td>
+  </tr>
+   <tr>
+    <td>summary</td>
+    <td>text</td>
+    <td>Summary text of the review</td>
+  </tr>
+   <tr>
+    <td>body</td>
+    <td>text</td>
+    <td>Continued or full text of the review</td>
+  </tr>
+   <tr>
+    <td>recommend</td>
+    <td>bool</td>
+    <td>Value indicating if the reviewer recommends the product</td>
+  </tr>
+   <tr>
+    <td>name</td>
+    <td>text</td>
+    <td>Username for question asker</td>
+  </tr>
+   <tr>
+    <td>email</td>
+    <td>text</td>
+    <td>Email address for question asker</td>
+  </tr>
+   <tr>
+    <td>photos</td>
+    <td>[text]</td>
+    <td>Array of text urls that link to images to be shown</td>
+  </tr>
+   <tr>
+    <td>characteristics</td>
+    <td>object</td>
+    <td>Object of keys representing characteristic_id and values representing the review value for that characteristic. { "14": 5, "15": 5 //...}</td>
+  </tr>
+</table>
+
+Expected Response:
+Status: 201 CREATED 
+
+## Mark Review as Helpful
+
+Updates a review to show it was found helpful.
+
+PUT `/reviews/:review_id/helpful`
+
+Parameters
+<table style="width:100%">
+  <tr>
+    <td>Parameter</td>
+    <td>Type</td>
+    <td>Description</td>
+  </tr>
+  <tr>
+    <td>reveiw_id</td>
+    <td>integer</td>
+    <td>Required ID of the review to update</td>
+  </tr>
+</table>
+
+Expected Response:
+Status: 2204 NO CONTENT
+
+## Report Review
+
+Updates a review to show it was reported. Note, this action does not delete the review, but the review will not be returned in the above GET request.
+
+PUT `/reviews/:review_id/report`
+
+Parameters
+<table style="width:100%">
+  <tr>
+    <td>Parameter</td>
+    <td>Type</td>
+    <td>Description</td>
+  </tr>
+  <tr>
+    <td>reveiw_id</td>
+    <td>integer</td>
+    <td>Required ID of the review to update</td>
+  </tr>
+</table>
+
+Expected Response:
+Status: 2204 NO CONTENT      
