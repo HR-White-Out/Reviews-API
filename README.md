@@ -15,8 +15,7 @@ This is a backend API node/express/Postgres application that provides review inf
 Testing: 
 Loader.IO, K6, New Relic 
 <br>
-
-## Ensure that Postgresql is install onto your computer
+ Ensure that Postgresql is install onto your computer
 
 ## Installation
 
@@ -40,14 +39,34 @@ Returns a list of reviews for a particular product. This list does not include a
 
 `GET /reviews/`
 
-QueryParameters
----------------------------------------------------------------------------------------------------------------
-| Parameter   | Type    | Description                                                                         |
-| page        |	integer |	Selects the page of results to return. Default 1.                                   |
-| count 	    | integer |	Specifies how many results per page to return. Default 5.                           |
-| sort 	      | text 	  | Changes the sort order of reviews to be based on "newest", "helpful", or "relevant" |
-| product_id  | integer | 	Specifies the product for which to retrieve reviews.                              |
----------------------------------------------------------------------------------------------------------------
+Query Parameters
+<table style="width:100%">
+  <tr>
+    <th>Parameter</th>
+    <th>Type</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td>page</td>
+    <td>integer</td>
+    <td>Selects the page of results to return. Default 1.</td>
+  </tr>
+  <tr>
+    <td>count</td>
+    <td>integer</td>
+    <td>Specifies how many results per page to return. Default 5.</td>
+  </tr>
+  <tr>
+    <td>sort</td>
+    <td>text</td>
+    <td>Changes the sort order of reviews to be based on "newest", "helpful", or "relevant"</td>
+  </tr>
+  <tr>
+    <td>product_id</td>
+    <td>integer</td>
+    <td>Specifies the product for which to retrieve reviews.</td>
+  </tr>
+</table>
 
 Expected data output exemple:
 ```
@@ -101,9 +120,19 @@ Returns review metadata for a given product.
 `GET /reviews/meta`
 
 QueryParameters
----------------------------------------------------------------------------------------------------------------
-| product_id  | integer | 	Required ID of the product for which data should be returned                      |
----------------------------------------------------------------------------------------------------------------
+<table style="width:100%">
+  <tr>
+    <th>Parameter</th>
+    <th>Type</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td>product_id</td>
+    <td>integer</td>
+    <td>Required ID of the product for which data should be returned</td>
+  </tr>
+ 
+</table>
 
 Expected data output exemple:
 ```
